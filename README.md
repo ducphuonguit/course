@@ -1,3 +1,166 @@
+# Course Attendance System
+
+> **🎉 Implementation Complete!** This project now includes full authentication and QR-based attendance functionality.
+
+## ✨ What's Implemented
+
+### 1. **Modular Architecture**
+- ✅ Core module for authentication (`com.course.core.auth`)
+- ✅ Attendance module (`com.course.modules.attendance`)
+- ✅ Clean separation of concerns with layered architecture
+
+### 2. **Authentication System**
+- ✅ User signup and login with JWT tokens
+- ✅ Two user roles: **ADMIN** and **STUDENT**
+- ✅ Secure password hashing with BCrypt
+- ✅ JWT-based stateless authentication
+- ✅ Role-based access control
+
+### 3. **QR Code Check-In System**
+- ✅ Admin creates sessions for courses
+- ✅ Admin generates secure QR tokens with expiration
+- ✅ Students scan QR codes to check in
+- ✅ Automatic validation of tokens and attendance recording
+- ✅ Prevention of duplicate check-ins
+
+### 4. **Database Schema**
+- ✅ Liquibase migrations for all tables
+- ✅ User, Student, Course, Session, Attendance entities
+- ✅ Proper foreign key relationships
+
+### 5. **API Endpoints**
+See [API_DOCUMENTATION.md](./API_DOCUMENTATION.md) for complete API reference.
+
+**Interactive API Documentation:**
+- **Swagger UI**: http://localhost:8080/swagger-ui.html
+- **OpenAPI Spec**: http://localhost:8080/v3/api-docs
+
+**Authentication:**
+- `POST /api/auth/signup` - Register new user
+- `POST /api/auth/login` - Login and get JWT token
+- `GET /api/auth/me` - Get current user info
+
+**Session Management (Admin):**
+- `POST /api/admin/sessions` - Create new session
+- `POST /api/admin/sessions/{id}/generate-qr` - Generate QR token
+- `GET /api/admin/sessions/{id}` - Get session details
+- `GET /api/admin/sessions/course/{courseId}` - List course sessions
+
+**Attendance:**
+- `POST /api/attendance/check-in` - Student check-in via QR
+- `GET /api/attendance/session/{sessionId}` - Get session attendance
+- `GET /api/attendance/student/{studentId}` - Get student attendance
+
+## 🚀 Quick Start
+
+1. **Start MySQL Database**
+   ```bash
+   # Ensure MySQL is running on localhost:3307
+   # Database: course
+   ```
+
+2. **Run the Application**
+   ```bash
+   ./mvnw spring-boot:run
+   ```
+
+3. **Access Swagger UI**
+   ```
+   http://localhost:8080/swagger-ui.html
+   ```
+   See [SWAGGER_GUIDE.md](./SWAGGER_GUIDE.md) for detailed Swagger usage.
+
+4. **Create Admin User**
+   ```bash
+   curl -X POST http://localhost:8080/api/auth/signup \
+     -H "Content-Type: application/json" \
+     -d '{
+       "username": "admin",
+       "password": "admin123",
+       "email": "admin@example.com",
+       "fullName": "Admin User",
+       "role": "ADMIN"
+     }'
+   ```
+
+## 📊 How QR Check-In Works
+
+1. **Admin creates a session** for a course
+2. **Admin generates QR token** (valid for X minutes)
+3. **Frontend displays QR code** (to be implemented)
+4. **Student scans QR code** (must be logged in)
+5. **System validates and records attendance**
+
+## 🛡️ Security Features
+
+- JWT authentication with 24-hour token expiration
+- BCrypt password hashing
+- Role-based authorization (ADMIN/STUDENT)
+- Secure random QR tokens
+- Token expiration validation
+- CORS support
+
+## 📁 Project Structure
+
+```
+src/main/java/com/course/
+├── core/
+│   └── auth/              # Authentication module
+│       ├── controller/    # AuthController
+│       ├── dto/          # Login/Signup DTOs
+│       ├── model/        # User entity
+│       ├── repository/   # UserRepository
+│       ├── security/     # SecurityConfig, JWT Filter
+│       └── service/      # AuthService, JwtTokenProvider
+└── modules/
+    └── attendance/       # Attendance module
+        ├── controller/   # Session & Attendance controllers
+        ├── dto/         # Session, Attendance DTOs
+        ├── model/       # Course, Session, Student, Attendance
+        ├── repository/  # JPA repositories
+        └── service/     # Business logic
+```
+
+## 🔧 Configuration
+
+Edit `src/main/resources/application.properties`:
+
+```properties
+# JWT
+jwt.secret=your-secret-key-at-least-256-bits
+jwt.expiration=86400000
+
+# Database
+spring.datasource.url=jdbc:mysql://localhost:3307/course
+spring.datasource.username=root
+spring.datasource.password=my-secret-pw
+```
+
+## 📝 Next Steps
+
+For production deployment, consider:
+
+1. **Frontend Development**
+   - Build QR code display for admins
+   - Build QR scanner for students
+   - Create dashboards
+
+2. **Additional Features**
+   - Course CRUD operations
+   - Student management
+   - Attendance reports
+   - Email notifications
+   - Late arrivals handling
+
+3. **Production Hardening**
+   - Use environment variables for secrets
+   - Add refresh tokens
+   - Implement rate limiting
+   - Add comprehensive logging
+   - Set up monitoring
+
+---
+
 # Course Project — Architecture + Liquibase + Module Guide
 
 Mục tiêu: Cung cấp schema Liquibase cho các bảng chính (courses, sessions, attendance, students) và hướng dẫn cách triển khai module theo các layer: controller, service, repository, models.

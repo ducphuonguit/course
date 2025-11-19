@@ -7,3 +7,5 @@ databaseChangeLog:
       file: db/changelog/0003-create-session.yaml
   - include:
       file: db/changelog/0004-create-attendance.yaml
+  - include:
+      file: db/changelog/0005-create-user.yaml
