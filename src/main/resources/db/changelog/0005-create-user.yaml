@@ -4,7 +4,7 @@ databaseChangeLog:
       author: copilot
       changes:
         - createTable:
-            tableName: user
+            tableName: users
             columns:
               - column:
                   name: id
@@ -52,20 +52,20 @@ databaseChangeLog:
                   type: TIMESTAMP
                   defaultValueComputed: CURRENT_TIMESTAMP
         - addForeignKeyConstraint:
-            baseTableName: user
+            baseTableName: users
             baseColumnNames: student_id
             referencedTableName: student
             referencedColumnNames: id
             constraintName: fk_user_student
             onDelete: SET NULL
         - createIndex:
-            tableName: user
+            tableName: users
             indexName: idx_user_username
             columns:
               - column:
                   name: username
         - createIndex:
-            tableName: user
+            tableName: users
             indexName: idx_user_email
             columns:
               - column:
