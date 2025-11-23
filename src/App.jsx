@@ -2,8 +2,9 @@ import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import LoginPage from './pages/LoginPage';
 import AdminLayout from './layouts/AdminLayout';
-import Dashboard from './pages/Dashboard';
-import CourseManager from './pages/CourseManager'; // <-- Import component mới
+// SỬA DÒNG NÀY: Thêm "Page" vào tên file
+import Dashboard from './pages/DashboardPage'; 
+import CourseManager from './pages/CourseManager';
 
 const PlaceholderPage = ({ title }) => (
   <div className="p-8 text-center bg-gray-50 border border-dashed rounded text-gray-500">
@@ -21,7 +22,6 @@ function App() {
           <Route index element={<Navigate to="dashboard" replace />} />
           <Route path="dashboard" element={<Dashboard />} />
           
-          {/* Route mới cho trang Quản lý Khóa học */}
           <Route path="courses" element={<CourseManager />} />
           
           <Route path="students" element={<PlaceholderPage title="Quản lý Sinh viên" />} />
