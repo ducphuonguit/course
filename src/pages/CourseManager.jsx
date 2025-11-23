@@ -3,9 +3,6 @@ import { Table, Button, Modal, Form, Input, DatePicker, message, Tag, Row, Col }
 import { PlusOutlined } from '@ant-design/icons';
 import dayjs from 'dayjs';
 import courseService from '../services/courseService';
-import { Link, useNavigate } from 'react-router-dom'; // Thêm useNavigate
-import { CalendarOutlined } from '@ant-design/icons'; // Thêm icon
-
 
 const CourseManager = () => {
   const [courses, setCourses] = useState([]);
@@ -14,7 +11,6 @@ const CourseManager = () => {
   const [submitting, setSubmitting] = useState(false);
   const [form] = Form.useForm();
 
-  // 1. Hàm lấy danh sách khóa học
   const fetchCourses = async () => {
     setLoading(true);
     try {
@@ -32,7 +28,6 @@ const CourseManager = () => {
     fetchCourses();
   }, []);
 
-  // 2. Cấu hình các cột cho bảng
   const columns = [
     {
       title: 'ID',
@@ -48,8 +43,8 @@ const CourseManager = () => {
     },
     {
       title: 'Tên môn học',
-      dataIndex: 'name',
-      key: 'name',
+      dataIndex: 'title', // SỬA: Backend dùng 'title', không phải 'name'
+      key: 'title',
       render: (text) => <span className="font-semibold">{text}</span>,
     },
     {
@@ -72,15 +67,16 @@ const CourseManager = () => {
     },
   ];
 
-  // 3. Xử lý khi submit form thêm mới
   const handleCreate = async (values) => {
     setSubmitting(true);
     try {
-      // Format dữ liệu ngày tháng chuẩn yyyy-MM-dd cho Backend
+      // SỬA: Format sang chuẩn LocalDateTime (ISO string) để Backend hiểu
       const payload = {
-        ...values,
-        startDate: values.startDate ? values.startDate.format('YYYY-MM-DD') : null,
-        endDate: values.endDate ? values.endDate.format('YYYY-MM-DD') : null,
+        code: values.code,
+        title: values.title, // Map từ form field 'title'
+        description: values.description,
+        startDate: values.startDate ? values.startDate.format('YYYY-MM-DDTHH:mm:ss') : null,
+        endDate: values.endDate ? values.endDate.format('YYYY-MM-DDTHH:mm:ss') : null,
       };
 
       await courseService.create(payload);
@@ -88,7 +84,7 @@ const CourseManager = () => {
       message.success('Tạo khóa học thành công!');
       setIsModalOpen(false);
       form.resetFields();
-      fetchCourses(); // Tải lại danh sách sau khi thêm
+      fetchCourses();
     } catch (error) {
       console.error("Error creating course:", error);
       message.error('Lỗi khi tạo khóa học');
@@ -99,7 +95,6 @@ const CourseManager = () => {
 
   return (
     <div>
-      {/* Header của trang: Tiêu đề + Nút thêm mới */}
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-2xl font-semibold m-0">Quản lý Khóa học</h2>
         <Button 
@@ -111,7 +106,6 @@ const CourseManager = () => {
         </Button>
       </div>
 
-      {/* Bảng danh sách */}
       <Table 
         columns={columns} 
         dataSource={courses} 
@@ -121,7 +115,6 @@ const CourseManager = () => {
         className="shadow-sm bg-white rounded-lg"
       />
 
-      {/* Modal Form */}
       <Modal
         title="Thêm khóa học mới"
         open={isModalOpen}
@@ -146,7 +139,7 @@ const CourseManager = () => {
             </Col>
             <Col span={12}>
               <Form.Item
-                name="name"
+                name="title" // SỬA: Đổi tên field thành 'title' cho khớp Backend
                 label="Tên môn học"
                 rules={[{ required: true, message: 'Vui lòng nhập tên môn!' }]}
               >

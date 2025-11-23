@@ -13,8 +13,9 @@ const LoginPage = () => {
     try {
       const data = await authService.login(values.username, values.password);
       
-      if (data.accessToken) {
-        localStorage.setItem('accessToken', data.accessToken);
+      // SỬA: Backend trả về 'token', không phải 'accessToken'
+      if (data.token) {
+        localStorage.setItem('accessToken', data.token);
         message.success('Đăng nhập thành công!');
         navigate('/dashboard');
       } else {

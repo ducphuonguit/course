@@ -21,17 +21,17 @@ const Dashboard = () => {
     const fetchStatistics = async () => {
       try {
         const data = await attendanceService.getStatistics();
-        setStats(data);
+        // Map dữ liệu từ Backend
+        setStats({
+          totalStudents: data.totalStudents || 0,
+          totalSessions: data.totalSessions || 0,
+          attendanceRate: data.attendanceRate || 0,
+          // Backend trả về 'absentCount', Frontend map sang 'totalAbsences'
+          totalAbsences: data.absentCount || 0 
+        });
       } catch (error) {
         console.error("Error fetching stats:", error);
         message.error("Không thể tải dữ liệu thống kê.");
-        // Dữ liệu giả định nếu API chưa sẵn sàng
-        setStats({
-          totalStudents: 150,
-          totalSessions: 45,
-          attendanceRate: 85.5,
-          totalAbsences: 12
-        });
       } finally {
         setLoading(false);
       }
@@ -47,7 +47,6 @@ const Dashboard = () => {
       <h2 className="text-2xl font-semibold mb-6">Tổng quan hệ thống</h2>
       
       <Row gutter={[16, 16]}>
-        {/* Thẻ 1: Tổng sinh viên */}
         <Col xs={24} sm={12} lg={6}>
           <Card bordered={false} className="shadow-sm hover:shadow-md transition-shadow">
             <Statistic
@@ -59,7 +58,6 @@ const Dashboard = () => {
           </Card>
         </Col>
 
-        {/* Thẻ 2: Tổng buổi học */}
         <Col xs={24} sm={12} lg={6}>
           <Card bordered={false} className="shadow-sm hover:shadow-md transition-shadow">
             <Statistic
@@ -70,7 +68,6 @@ const Dashboard = () => {
           </Card>
         </Col>
 
-        {/* Thẻ 3: Tỉ lệ đi học */}
         <Col xs={24} sm={12} lg={6}>
           <Card bordered={false} className="shadow-sm hover:shadow-md transition-shadow">
             <Statistic
@@ -84,7 +81,6 @@ const Dashboard = () => {
           </Card>
         </Col>
 
-        {/* Thẻ 4: Số lượt vắng */}
         <Col xs={24} sm={12} lg={6}>
           <Card bordered={false} className="shadow-sm hover:shadow-md transition-shadow">
             <Statistic
@@ -98,7 +94,7 @@ const Dashboard = () => {
       </Row>
 
       <div className="mt-8 bg-white p-4 rounded shadow-sm min-h-[300px] flex items-center justify-center border border-gray-100 border-dashed">
-        <span className="text-gray-400">Biểu đồ thống kê chi tiết sẽ hiển thị ở đây (Placeholder)</span>
+        <span className="text-gray-400">Biểu đồ thống kê chi tiết sẽ hiển thị ở đây</span>
       </div>
     </div>
   );
