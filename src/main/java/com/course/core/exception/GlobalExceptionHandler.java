@@ -220,7 +220,7 @@ public class GlobalExceptionHandler {
             Exception ex,
             HttpServletRequest request) {
         
-        log.error("Unexpected error occurred", ex);
+        ex.printStackTrace();
         
         ErrorResponse errorResponse = ErrorResponse.builder()
                 .timestamp(LocalDateTime.now())

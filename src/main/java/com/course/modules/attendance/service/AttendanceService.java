@@ -242,6 +242,7 @@ public class AttendanceService {
                 .studentName(a.getStudent().getFullName())
                 .status(a.getStatus())
                 .checkedAt(a.getCheckedAt())
+                .courseName(a.getSession().getCourse().getTitle())
                 .build();
     }
 }

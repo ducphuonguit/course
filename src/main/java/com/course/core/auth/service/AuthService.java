@@ -7,6 +7,7 @@ import com.course.core.auth.dto.UserDto;
 import com.course.core.auth.model.User;
 import com.course.core.auth.model.UserRole;
 import com.course.core.auth.repository.UserRepository;
+import com.course.modules.student.repository.StudentRepository;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -23,17 +24,20 @@ public class AuthService {
     private final AuthenticationManager authenticationManager;
     private final JwtTokenProvider jwtTokenProvider;
     private final UserMapper userMapper;
+    private final StudentRepository studentRepository;
 
     public AuthService(UserRepository userRepository,
                        PasswordEncoder passwordEncoder,
                        AuthenticationManager authenticationManager,
                        JwtTokenProvider jwtTokenProvider,
-                       UserMapper userMapper) {
+                       UserMapper userMapper,
+                       StudentRepository studentRepository) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.authenticationManager = authenticationManager;
         this.jwtTokenProvider = jwtTokenProvider;
         this.userMapper = userMapper;
+        this.studentRepository = studentRepository;
     }
 
     @Transactional
@@ -47,8 +51,14 @@ public class AuthService {
         }
 
         // Validate student role requirements
-        if (request.getRole() == UserRole.STUDENT && request.getStudentId() == null) {
-            throw new RuntimeException("Student ID is required for STUDENT role");
+        if (request.getRole() == UserRole.STUDENT) {
+            if (request.getStudentId() == null) {
+                throw new RuntimeException("Student ID is required for STUDENT role");
+            }
+            // Validate that the student exists
+            if (!studentRepository.existsById(request.getStudentId())) {
+                throw new RuntimeException("Student with ID " + request.getStudentId() + " does not exist");
+            }
         }
 
         // Create user
