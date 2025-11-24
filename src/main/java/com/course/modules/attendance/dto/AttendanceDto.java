@@ -18,4 +18,5 @@ public class AttendanceDto {
     private String studentName;
     private AttendanceStatus status;
     private LocalDateTime checkedAt;
+    private String courseName;
 }
